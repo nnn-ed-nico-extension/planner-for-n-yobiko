@@ -1,6 +1,8 @@
 {
-  "extName": {
-    "message": "report-info-tool",
-    "description": ""
-  }
+	"extName": {
+		"message": "report-info-tool"
+	},
+	"extDesc": {
+		"message": "Show report detail in N予備校"
+	}
 }
