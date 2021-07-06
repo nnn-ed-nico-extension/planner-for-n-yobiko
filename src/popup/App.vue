@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
-		<div class="report-info" v-if="chapterDetail && !loading">
-			<table>
+		<div class="report-info">
+			<table v-if="chapterDetail && !loading">
 				<tr>
 					<th colspan="3" class="merge-right-cell">全体</th><td> {{p(passedSections.length, sections.length)}}</td>
 				</tr>
@@ -51,14 +51,18 @@
 					<!--                                                                   --><td class="merge-right-cell">論述テスト</td><td>{{pd(counts[resourceType.ESSAY_REPORT])}}</td>
 				</tr>
 			</table>
+			<div v-else-if="!chapterDetail && !loading">
+				読み込めませんでした :(
+			</div>
+			<div v-else>
+				Now loading!
+			</div>
 		</div>
-		<div v-else-if="!chapterDetail && !loading">
-			読み込めませんでした :(
+		<div class="detail">
+			<label>
+				<input type="checkbox" v-model="ignoreSupplement"> サプリメント教材を無視
+			</label>
 		</div>
-		<div v-else>
-			Now loading!
-		</div>
-		<input type="checkbox" v-model="ignoreSupplement">
 	</div>
 </template>
 
@@ -98,9 +102,7 @@ export default {
 	},
 	watch: {
 		ignoreSupplement (newVal) {
-			chrome.storage.local.set({'ignoreSupplement': newVal}, function() {
-				
-			});
+			chrome.storage.local.set({ignoreSupplement: newVal}, function() {});
 		}
 	},
 	computed: {
@@ -153,7 +155,7 @@ export default {
 
 <style>
 :root {
-	--table-border: 1px solid #8e8e8e;
+	--table-border: 1px solid #dbdbdb;
 }
 html {
 	width: 800px;
@@ -163,9 +165,21 @@ body {
 	margin: 0;
 }
 
+#app {
+	display: flex;
+}
+
+.report-info {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 400px;
+}
+
 .report-info table {
 	border-collapse: collapse;
-	border: var(--table-border) ;
+	border: var(--table-border);
+	width: 100%;
 }
 
 .report-info table td:not(.padding) {
@@ -195,4 +209,9 @@ body {
 	border-left: none !important;
 }
 
+.detail {
+	flex: 1;
+	padding: 10px;
+	box-shadow: 0 0 5px 0 #00000034;
+}
 </style>
