@@ -1,7 +1,7 @@
 <template>
     <table>
 		<tr>
-			<th colspan="3" class="merge-right-cell">全体</th><td> {{p(passedSections.length, sections.length)}} </td>
+			<th colspan="3" class="merge-right-cell">全体</th><td><v-progress :min="passedSections.length" :max="sections.length" /></td>
 		</tr>
 		<tr>
 			<td rowspan="14" class="padding"></td>
@@ -11,13 +11,13 @@
 			<!--                              --><th colspan="2" class="merge-right-cell">動画</th><td>{{formatTime(moviesLength)}}</td>
 		</tr>
 		<tr>
-			<!--                              --><td rowspan="4" class="padding"></td><td class="merge-right-cell">視聴済み</td><td>{{formatTime(passedMoviesLength)}} ({{getPercentage(passedMoviesLength, moviesLength).toFixed(1)}}%) <span class="check-icon"><fa /></span></td>
+			<!--                              --><td rowspan="4" class="padding"></td><td class="merge-right-cell">視聴済み</td><td><v-progress :displayValue="formatTime(passedMoviesLength)" :min="passedMoviesLength" :max="moviesLength"/></td>
 		</tr>
 		<tr>
 			<!--                                                                   --><td class="merge-right-cell">未視聴</td><td>{{formatTime(noPassedMoviesLength)}}</td>
 		</tr>
 		<tr>
-			<!--                                                                   --><td class="merge-right-cell">授業動画数</td><td>{{pd(counts[resourceType.MOVIE])}}</td>
+			<!--                                                                   --><td class="merge-right-cell">授業動画数</td><td><v-progress :short="counts[resourceType.MOVIE]"/></td>
 		</tr>
 		<tr>
 			<!--                                                                   --><td class="merge-right-cell">動画平均時間</td><td>{{formatTime(moviesLengthAverage)}}</td>
@@ -25,39 +25,43 @@
 		</template>
 		<template v-if="counts[resourceType.VR_EXPERIENCE]">
 		<tr>
-			<!--                              --><th colspan="2" class="merge-right-cell">VR専用動画</th><td>{{pd(counts[resourceType.VR_EXPERIENCE])}}</td>
+			<!--                              --><th colspan="2" class="merge-right-cell">VR専用動画</th><td><v-progress :short="counts[resourceType.VR_EXPERIENCE]" /></td>
 		</tr>
 		</template>
 		<template v-if="tests">
 		<tr>
-			<!--                              --><th colspan="2" class="merge-right-cell">テスト</th><td>{{pd(tests)}}</td>
+			<!--                              --><th colspan="2" class="merge-right-cell">テスト</th><td><v-progress :short="tests" /></td>
 		</tr>
 		<tr>
-			<!--                              --><td rowspan="2" class="padding"></td><td class="merge-right-cell">記述/選択テスト</td><td>{{pd(counts[resourceType.EVALUATION_TEST])}}</td>
+			<!--                              --><td rowspan="2" class="padding"></td><td class="merge-right-cell">記述/選択テスト</td><td><v-progress :short="counts[resourceType.EVALUATION_TEST]" /></td>
 		</tr>
 		<tr>
-			<!--                                                                   --><td class="merge-right-cell">論述テスト</td><td>{{pd(counts[resourceType.ESSAY_TEST])}}</td>
+			<!--                                                                   --><td class="merge-right-cell">論述テスト</td><td><v-progress :short="counts[resourceType.ESSAY_TEST]" /></td>
 		</tr>
 		</template>
 		<tr>
-			<!--                              --><th colspan="2" class="merge-right-cell">レポート</th><td>{{pd(reports)}}</td>
+			<!--                              --><th colspan="2" class="merge-right-cell">レポート</th><td><v-progress :short="reports" /></td>
 		</tr>
 		<tr>
-			<!--                              --><td rowspan="2" class="padding"></td><td class="merge-right-cell">記述/選択テスト</td><td>{{pd(counts[resourceType.EVALUATION_REPORT])}}</td>
+			<!--                              --><td rowspan="2" class="padding"></td><td class="merge-right-cell">記述/選択テスト</td><td><v-progress :short="counts[resourceType.EVALUATION_REPORT]" /></td>
 		</tr>
 		<tr>
-			<!--                                                                   --><td class="merge-right-cell">論述テスト</td><td>{{pd(counts[resourceType.ESSAY_REPORT])}}</td>
+			<!--                                                                   --><td class="merge-right-cell">論述テスト</td><td><v-progress :short="counts[resourceType.ESSAY_REPORT]" /></td>
 		</tr>
 	</table>
 </template>
 <script>
 import { resourceType } from '../Constants';
+import VProgress from './Progress.vue';
 
 export default {
     name: 'progress-table',
 	data: () => ({
 		resourceType
 	}),
+	components: {
+		VProgress
+	},
     props: {
         chapterDetail: {
             type: Object,
@@ -69,12 +73,8 @@ export default {
         }
     },
 	methods: {
-		getPercentage: (val, param) => val / param * 100,
-		p (val, param) { return `${val}/${param} (${this.getPercentage(val, param).toFixed(1)}%)`; },
-		pd (val) { return this.p(val.passed, val.all); },
 		calcCount (o, t) { return (this.counts[o] || this.counts[o]) ? {passed: (this.counts[o]?.passed || 0)+(this.counts[t]?.passed || 0), all:(this.counts[o]?.all || 0)+(this.counts[t]?.all || 0)} : void 0; },
-		formatTime: s => `${Math.floor(s/3600)}時間${Math.floor((s%3600)/60)}分${s%60}秒`,
-		isCompleted: val => (val.passed === val.all)
+		formatTime: s => `${Math.floor(s/3600)}時間${Math.floor((s%3600)/60)}分${s%60}秒`
 	},
 	computed: {
 		sections () {
