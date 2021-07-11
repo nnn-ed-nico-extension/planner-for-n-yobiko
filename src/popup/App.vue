@@ -10,9 +10,15 @@
 			</div>
 		</div>
 		<div class="detail">
-			<label>
-				<input type="checkbox" v-model="ignoreSupplement"> サプリメント教材を無視
-			</label>
+			<div class="contents">
+				<label>
+					<input type="checkbox" v-model="ignoreSupplement"> サプリメント教材を無視
+				</label>
+			</div>
+			<footer>
+				<a href="https://github.com/nnn-ed-nico-extension/planner-for-n-yobiko" target="_blank"><fa :icon="['fab', 'github']" />ソースコード</a>
+				<a href="https://github.com/nnn-ed-nico-extension/planner-for-n-yobiko" target="_blank"><fa icon="donate" />開発者に寄付をする</a>
+			</footer>
 		</div>
 	</div>
 </template>
@@ -70,6 +76,12 @@ body {
 	display: flex;
 }
 
+a {
+	text-decoration: none;
+	color: #6486ff;
+}
+</style>
+<style scoped>
 .report-info {
 	display: flex;
 	justify-content: center;
@@ -79,7 +91,22 @@ body {
 
 .detail {
 	flex: 1;
-	padding: 10px;
+	display: flex;
+	flex-direction: column;
 	box-shadow: 0 0 5px 0 #00000034;
+}
+
+.detail .contents {
+	flex: 1;
+	padding: 10px;
+}
+
+footer {
+	padding: 10px;
+	background: #222222;
+}
+
+footer a {
+	padding: 0 5px;
 }
 </style>
